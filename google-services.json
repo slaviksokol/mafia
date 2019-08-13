@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "787922881388",
+    "firebase_url": "https://mafia-37577.firebaseio.com",
+    "project_id": "mafia-37577",
+    "storage_bucket": "mafia-37577.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787922881388:android:6bc8758bb4eaffce",
+        "android_client_info": {
+          "package_name": "ru.mafia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "787922881388-l0tojup0j5d2nuarhl4gko8dfrovehb0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzUO5FLFmnoNQsZJWrdQZWNeSAHMo7ll4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "787922881388-l0tojup0j5d2nuarhl4gko8dfrovehb0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "787922881388-fu8vgstg4imjl3f16rt6np6vpoe7uitq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ru.mafia"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
