@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="/template/css/styles.css">
+	<script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+	<meta name="viewport" content="width-device-width, initial-scale=1">
+</head>
+<body>
+	<div class="main" id="main-menu">
+		<div class="header-wrapper">
+			<h1>Мафия</h1>
+		</div>
+		<div class="start-button-wrapper">
+			<div class="choose-item ci-1">
+				<button class="home-start">
+					Начать игру
+				</button>
+			</div>
+			<div class="choose-item ci-2 hidden scale">
+				<div class="link-begin-wrapper">
+					<a class="player" id="player-btn" href="#">Игрок</a>
+					<a class="lead" id="admin-btn" href="#" >Ведущий</a>
+				</div>
+			</div>
+		</div>
+		<div class="link-wrapper">
+			<ul>
+				<li class="rules"><a href="#">правила игры</a></li>
+				<li><a href="#">о нас</a></li>
+			</ul>
+		</div>
+	</div>
+	<div class="main player" id="main-player" style="display: none">
+		<div class="header-wrapper player">
+			<h1 class="player">Игрок</h1>
+		</div>
+		<div class="center-block">
+			<div class="code-wrapper">
+				<div class="input-code-wrapper">
+					<input type="text" pattern="^[ 0-9]+$" maxlength="4" id="input-key" class="input-code">
+				</div>
+				<label class="code-label input-code-label">код доступа</label>
+			</div>
+			<div class="input-name-wrapper">
+				<input type="text" class="input-name" maxlength="9" placeholder="введите имя">
+			</div>
+		</div>
+		<div class="link-wrapper futher-wrapper">
+			<a href="#" class="futher" id="get-card-btn">далее</a>
+		</div>
+	</div>
+	<div class="main" id="main-wait" style="display: none">
+		<div class="header-wrapper">
+			<span class="please-wait">Игра скоро начнется</span>
+		</div>
+	</div>
+	<div class="card" id="main-card" style="display: none">
+		<button class="death-btn">Убит</button>
+	</div>
+	<div class="main lead" id="main-lead" style="display: none">
+		<div class="header-wrapper lead">
+			<h1 class="lead">Ведущий</h1>
+		</div>
+		<div class="center-block">
+			<div class="code-wrapper">
+				<div class="code" id="lead-key-input"><span class="build-process">создаем...</span></div>
+				<div class="code-label">код доступа</div>
+			</div>
+			<div class="players-count-wrapper">
+				<div class="players-count-label">подключено</div>
+				<div class="players-count" id="lead-count-input">0</div>
+			</div>
+		</div>
+		<div class="link-wrapper">
+			<a href="#" class="futher" id="lead-start-game">начать игру</a>
+			<a href="#" class="futher" id="lead-end-game" style="display: none;">убить всех</a>
+		</div>
+	</div>
+</body>
+<script src="/template/js/scripts.js"></script>
+<script>
+var token = 'test';
+$('#player-btn').click(function()
+{
+	$('#main-menu').css('display', 'none');
+	$('#main-player').css('display', 'block');
+});
+
+var gameID = null;
+
+$('#admin-btn').click(function()
+{
+	$('#main-menu').css('display', 'none');
+	$('#main-lead').css('display', 'block');
+	$.ajax(
+	{
+		url : '/app/ajax.php',
+		type : 'post',
+		data :
+			{
+				atype : 'game.reg',
+				token : token,
+			},
+		success : function(result)
+		{
+			gameID = result;
+			checkUsers();
+			$('#lead-key-input').html(gameID);
+		}
+	});
+});
+
+
+
+var myTimerCheck = null;
+
+function checkUsers()
+{
+	myTimerCheck = setInterval(function()
+	{
+		$.ajax(
+		{
+			url : '/app/ajax.php',
+			type : 'post',
+			data :
+				{
+					atype : 'user.get_count',
+					key : gameID,
+				},
+			success : function(result)
+			{
+				$('#lead-count-input').text(result);
+			}
+		});
+	}, 1000);
+}
+
+$('#lead-end-game').click(function()
+{
+	$(this).css('display', 'none');
+	$('#lead-start-game').css('display', 'block');
+	$.ajax(
+	{
+		url : '/app/ajax.php',
+		type : 'post',
+		data :
+			{
+				atype : 'user.kill_all',
+				key : gameID,
+			},
+		success : function(result)
+		{
+			$('#lead-count-input').text('0');
+			checkUsers();
+		}
+	});
+});
+
+$('#lead-start-game').click(function()
+{
+	$(this).css('display', 'none');
+	$('#lead-end-game').css('display', 'block');
+	clearInterval(myTimerCheck);
+	$.ajax(
+	{
+		url : '/app/ajax.php',
+		type : 'post',
+		data :
+			{
+				atype : 'user.card_set',
+				key : gameID,
+			},
+		success : function(result)
+		{
+			
+		}
+	});
+});
+
+var myTimer = null;
+
+$('#get-card-btn').click(function()
+{
+	$('#main-menu').css('display', 'none');
+	$('#main-player').css('display', 'none');
+	$('#main-wait').css('display', 'block');
+	var name = $('.input-name').val();
+	var key = $('#input-key').val();
+	$.ajax(
+	{
+		url : '/app/ajax.php',
+		type : 'post',
+		data :
+			{
+				atype : 'user.reg',
+				token : token,
+				name : name,
+				key : key,
+			},
+		success : function(result)
+		{		
+			myTimer = setInterval(function()
+			{
+				$.ajax(
+				{
+					url : '/app/ajax.php',
+					type : 'post',
+					data :
+						{
+							atype : 'user.get_card',
+							token : token,
+						},
+					success : function(result)
+					{
+						if(result != '')
+						{									
+							clearInterval(myTimer);
+							$('#main-wait').css('display', 'none');
+							var cl = 'peop';
+							if(result == 'm')
+							{
+								cl = 'maf';
+							}
+							if(result == 'k')
+							{
+								cl = 'sher';
+							}
+							if(result == 'd')
+							{
+								cl = 'doc';
+							}
+							console.log(cl);
+							$('#main-card').addClass(cl);
+							$('#main-card').css('display', 'block');
+							
+						}
+					}
+				});
+			}, 1000);
+		}
+	});
+	
+});
+
+</script>
+</html>

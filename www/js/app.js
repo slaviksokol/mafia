@@ -60,7 +60,7 @@ function onRd(){
 			localStorage.setItem('device_id',window.mlfConfig.deviceId);
 		}
 	}
-	cordova.InAppBrowser.open('https://mafia.jsoft.host', '_self', 'location=yes');
+	cordova.InAppBrowser.open('https://mafia.jsoft.host?device_id='+device.uuid, '_self', 'location=yes');
 	
 	//создание базы
 	/*if(typeof(window.openDatabase) !== 'undefined'){
